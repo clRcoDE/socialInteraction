@@ -13,6 +13,7 @@ import {
   TouchableHighlight
 } from "react-native";
 import dataSource from "./Data";
+import { off } from "rsvp";
 
 let deviceWidth = Dimensions.get("window").width;
 let deviceHeight = Dimensions.get("window").height;
@@ -27,32 +28,39 @@ export default class MainApp extends Component {
     this.state = {
       ScrollY: new Animated.Value(0),
       wrapValue: new Animated.Value(1),
-      posY: new Animated.Value(0)
+      posY: new Animated.Value(0),
+      isFollowed: false
     };
 
+    this.GoUp = new Animated.Value(0);
     this.scrollWrap = new Animated.Value(0);
+    this.fadeInOut = new Animated.Value(1)
+    // this.fadeIn = new Animated.Value(0)
   }
 
   configurefile = {
-    duration: 600,
+    duration: 2000,
     create: {
-      type: "easeOut",
+      type: "easeIn",
       // springDamping: 0.4,
+      useNativeDriver: true,
 
-      duration: 250,
-      property: "scaleY"
+      duration: 400,
+      property: "opacity"
     },
     update: {
-      type: "easeOut",
+      type: "easeIn",
       // springDamping: 0.4,
-      property: "scaleY",
-      duration: 250
+      property: "opacity",
+      useNativeDriver: true,
+      duration: 400
     },
     delete: {
-      type: "easeOut",
+      type: "easeIn",
       // springDamping: 0.4,
-      duration: 250,
-      property: "scaleY"
+      duration: 400,
+      property: "opacity",
+      useNativeDriver: true
     }
   };
 
@@ -174,32 +182,89 @@ export default class MainApp extends Component {
     }
   };
 
-  fadeUpOut = () => {};
+  fadeUpOut = () => {
+    Animated.parallel([Animated.timing(this.GoUp, {
+      toValue: -50,
+      duration: 200,
+      useNativeDriver:true
+    }),
+    Animated.timing(this.fadeInOut,{
+toValue:0,
+duration:200,
+useNativeDriver:true,
+
+    })
+  
+  
+  
+  ]).start()
+    
+  };
+  fadeUpIn = () => {
+
+    
+    Animated.parallel([Animated.timing(this.GoUp, {
+      toValue: 0,
+      duration: 100,
+      useNativeDriver:true,
+    }),Animated.timing(this.fadeInOut,{
+toValue:1,
+duration:400,
+useNativeDriver:true,
+
+    })
+  
+  
+  
+  ]).start()
+   
+
+  };
   componentDidMount() {
     this.scrollWrap.addListener(({ value }) => (this.offset = value));
   }
 
+  changeIsFollowed = x => {
+    if (x === 1) {
+      LayoutAnimation.configureNext(this.configurefile);
+      this.setState({ isFollowed: true });
+    } else {
+      LayoutAnimation.configureNext(this.configurefile);
+      this.setState({ isFollowed: false });
+    }
+  };
+
   render() {
     let heighter = this.scrollWrap.interpolate({
-      inputRange: [0, 300],
-      outputRange: [300, 100],
+      inputRange: [0, 450],
+      outputRange: [350, 100],
       extrapolate: "clamp"
     });
 
     let ImageHeighter = this.scrollWrap.interpolate({
-      inputRange: [0, 350],
-      outputRange: [200, 100],
+      inputRange: [0, 400],
+      outputRange: [200, 95],
       extrapolate: "clamp"
     });
-    let  topper = this.scrollWrap.interpolate({
-        inputRange: [0, 300],
-      outputRange: [75, 0],
+    let InfoHeighter = this.scrollWrap.interpolate({
+      inputRange: [0, 400],
+      outputRange: [150, 0],
       extrapolate: "clamp"
-    })
+    });
+    let topper = this.scrollWrap.interpolate({
+      inputRange: [0, 350],
+      outputRange: [145, 0],
+      extrapolate: "clamp"
+    });
+
+    let photoWidthHeight = this.scrollWrap.interpolate({
+      inputRange: [0, 300],
+      outputRange: [75, 50],
+      extrapolate: "clamp"
+    });
 
     return (
       <View style={styles.componentContainer}>
-      
         <Animated.View
           style={[
             styles.expandableHeader,
@@ -216,7 +281,6 @@ export default class MainApp extends Component {
             // }
           ]}
         >
-        
           <Animated.View style={styles.ImageContainer}>
             <Animated.Image
               source={require("../Assets/Images/neon-lights.png")}
@@ -229,29 +293,70 @@ export default class MainApp extends Component {
                 // ]
               }}
             />
-            <Animated.View style={styles.BigProfileInfo}>
-              <Text>Brad Beardman</Text>
-              <View style={styles.locationWrapper}>
-                <Image source={require("../Assets/Images/location.png")} />
-                <Text>San Fransisco , CA </Text>
-         
-
+            <Animated.View
+              style={{
+                transform: [{ translateY: this.GoUp }],
+                backgroundColor: "yellowgreen",
+                height: 140,
+                justifyContent: "flex-end",
+                borderWidth:4,
+                borderColor:'red',
+                paddingBottom:10,
+                opacity:this.fadeInOut
+              }}
+            >
+              <Animated.View style={[styles.BigProfileInfo]}>
+                <Text>Brad Beardman</Text>
+                <View style={styles.locationWrapper}>
+                  <Image source={require("../Assets/Images/location.png")} />
+                  <Text>San Fransisco , CA </Text>
+                </View>
+              </Animated.View>
+              <View
+                style={[styles.profileInfoWrapper, { flexDirection: "row" }]}
+              >
+                <View style={[styles.following, { flexDirection: "row" }]}>
+                  <Text>1,209</Text>
+                  <Text>Following</Text>
+                </View>
+                <View style={[styles.followers, { flexDirection: "row" }]}>
+                  <Text>42.5</Text>
+                  <Text>Followers</Text>
+                </View>
               </View>
             </Animated.View>
-            <View style={[styles.profileInfoWrapper, { flexDirection: "row" }]}>
-              <View style={[styles.following, { flexDirection: "row" }]}>
-                <Text>1,209</Text>
-                <Text>Following</Text>
+            <Animated.View
+              style={[styles.BigAbsoluteProfileView, { top: topper }]}
+            >
+              <View style={styles.profilePhotoWrapper}>
+                <Animated.Image
+                  source={require("../Assets/Images/profile.png")}
+                  style={{
+                    width: photoWidthHeight,
+                    height: photoWidthHeight,
+                    borderRadius: 100
+                  }}
+                />
+               
               </View>
-              <View style={[styles.followers, { flexDirection: "row" }]}>
-                <Text>42.5</Text>
-                <Text>Followers</Text>
-              </View>
-
-            </View>
-            <Animated.View style={[styles.BigAbsoluteProfileView,{top:topper}]}></Animated.View>
+              <View style={styles.centerFadeText}><Text>Brad Beardman</Text><Text>Brad Beardman</Text></View>
+              {this.state.isFollowed ? (
+                <TouchableHighlight
+                  onPress={() => {}}
+                  style={[styles.followButton, { width: 30 }]}
+                >
+                  <Text>+</Text>
+                </TouchableHighlight>
+              ) : (
+                <TouchableHighlight
+                  onPress={() => {}}
+                  style={[styles.followButton, { width: 100 }]}
+                >
+                  <Text>Follow</Text>
+                </TouchableHighlight>
+              )}
+            </Animated.View>
           </Animated.View>
-
         </Animated.View>
         <Animated.View style={[styles.navigateWrapper]}>
           <TouchableHighlight onPress={() => {}}>
@@ -285,6 +390,18 @@ export default class MainApp extends Component {
                 const offset = nativeEvent.contentOffset.y / scrollSensitivity;
                 LayoutAnimation.configureNext(this.configurefile);
                 this.scrollWrap.setValue(offset);
+                this.fadeUpOut();
+                // 
+
+                // console.warn(offset)
+                if (offset > 140) {
+                  this.changeIsFollowed(1);
+                  this.fadeUpOut();
+                } else {
+                  this.changeIsFollowed(0);
+                  this.fadeUpIn();
+
+                }
                 // console.warn('hello'),
                 // console.warn(offset)
 
@@ -359,21 +476,34 @@ const styles = StyleSheet.create({
     borderColor: "yellow",
     borderWidth: 3,
     backgroundColor: "royalblue",
-    overflow: 'hidden'
+    overflow: "hidden"
   },
 
-  BigAbsoluteProfileView:{
+  BigAbsoluteProfileView: {
     //   flex:1,
-    height:150,
-    width:deviceWidth,
-    backgroundColor:'rgba(200,200,200,0.3)',
-      borderWidth:5,
-      borderColor:'red',
-      position: 'absolute',
-      zIndex: 100,
-      top:10,
-      overflow: 'hidden',
+    height: 100,
+    width: deviceWidth,
+    backgroundColor: "rgba(200,200,200,0.3)",
+    borderWidth: 5,
+    borderColor: "red",
+    position: "absolute",
+    zIndex: 100,
+    top: 10,
+    overflow: "hidden",
+    justifyContent: "space-between",
+    alignItems: "center",
+    flexDirection: "row",
+    paddingHorizontal: 15
+  },
 
+  followButton: {
+    backgroundColor: "#ff326c",
+    height: 30,
+    // width: 50,
+    borderRadius: 50,
+    elevation: 2,
+    justifyContent: "center",
+    alignItems: "center"
   },
   navigateWrapper: {
     height: 35,
@@ -381,7 +511,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-evenly",
     alignItems: "center",
-    elevation: 5
+    elevation: 10
   },
   bodyWrapper: {
     borderColor: "lime",
@@ -412,6 +542,8 @@ const styles = StyleSheet.create({
     borderWidth: 3
   },
   locationWrapper: {
-    flexDirection: "row"
+    flexDirection: "row",
+    borderWidth: 3,
+    borderColor:'purple'
   }
 });
