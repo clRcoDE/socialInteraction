@@ -17,14 +17,12 @@ import dataSource from "./Data";
 let deviceWidth = Dimensions.get("window").width;
 let deviceHeight = Dimensions.get("window").height;
 
-
 export default class MainApp extends Component {
   constructor(props) {
     super(props);
 
     UIManager.setLayoutAnimationEnabledExperimental &&
       UIManager.setLayoutAnimationEnabledExperimental(true);
-
 
     this.state = {
       ScrollY: new Animated.Value(0),
@@ -35,28 +33,28 @@ export default class MainApp extends Component {
     this.scrollWrap = new Animated.Value(0);
   }
 
-    configurefile = {
-      duration: 300,
-      create: {
-        type: "easeOut",
-        // springDamping: 0.4,
+  configurefile = {
+    duration: 600,
+    create: {
+      type: "easeOut",
+      // springDamping: 0.4,
 
-        duration: 500,
-        property: "scaleY"
-      },
-      update: {
-        type: "easeOut",
-        // springDamping: 0.4,
-        property: "scaleY",
-        duration: 500
-      },
-      delete: {
-        type: "easeOut",
-        // springDamping: 0.4,
-        duration: 500,
-        property: "scaleY"
-      }
-    };
+      duration: 250,
+      property: "scaleY"
+    },
+    update: {
+      type: "easeOut",
+      // springDamping: 0.4,
+      property: "scaleY",
+      duration: 250
+    },
+    delete: {
+      type: "easeOut",
+      // springDamping: 0.4,
+      duration: 250,
+      property: "scaleY"
+    }
+  };
 
   //   easeTranslate = () => {
   //     Animated.timing(this.state.wrapValue, {
@@ -83,64 +81,64 @@ export default class MainApp extends Component {
   //     }
   //   };
 
-//   AnimatedWayHeader = () => {
-//     if (this.state.ScrollY < 5) {
-//         console.warn('<5');
-//       this.easeZeroScale();
-//     } else if (this.state.ScrollY > 5 && this.state.ScrollY < 25) {
-//         console.warn('5<x<25');
+  //   AnimatedWayHeader = () => {
+  //     if (this.state.ScrollY < 5) {
+  //         console.warn('<5');
+  //       this.easeZeroScale();
+  //     } else if (this.state.ScrollY > 5 && this.state.ScrollY < 25) {
+  //         console.warn('5<x<25');
 
-//       this.easeOnScroll();
-//     } else if (this.state.ScrollY > 25) {
-//         console.warn('x>25');
+  //       this.easeOnScroll();
+  //     } else if (this.state.ScrollY > 25) {
+  //         console.warn('x>25');
 
-//       this.easeStopped();
-//     }
-//   };
+  //       this.easeStopped();
+  //     }
+  //   };
 
-//   easeZeroScale = () => {
-//     Animated.parallel([
-//       Animated.timing(this.state.wrapValue, {
-//         toValue: 1,
-//         duration: 250,
-//         delay: 0,
-//         useNativeDriver: true
-//       }),
-//       Animated.timing(this.state.posY, {
-//         toValue: 0,
-//         duration: 200,
-//         delay: 0,
-//         useNativeDriver: true
-//       })
-//     ]).start();
-//   };
-//   easeOnScroll = () => {
-//     Animated.parallel([
-//       Animated.timing(this.state.wrapValue, {
-//         toValue: 0.5,
-//         duration: 250,
-//         delay: 0,
-//         useNativeDriver: true
-//       }),
-//       Animated.timing(this.state.posY, {
-//         toValue: -100,
-//         duration: 200,
-//         delay: 0,
-//         useNativeDriver: true
-//       })
-//     ]).start();
-//   };
+  //   easeZeroScale = () => {
+  //     Animated.parallel([
+  //       Animated.timing(this.state.wrapValue, {
+  //         toValue: 1,
+  //         duration: 250,
+  //         delay: 0,
+  //         useNativeDriver: true
+  //       }),
+  //       Animated.timing(this.state.posY, {
+  //         toValue: 0,
+  //         duration: 200,
+  //         delay: 0,
+  //         useNativeDriver: true
+  //       })
+  //     ]).start();
+  //   };
+  //   easeOnScroll = () => {
+  //     Animated.parallel([
+  //       Animated.timing(this.state.wrapValue, {
+  //         toValue: 0.5,
+  //         duration: 250,
+  //         delay: 0,
+  //         useNativeDriver: true
+  //       }),
+  //       Animated.timing(this.state.posY, {
+  //         toValue: -100,
+  //         duration: 200,
+  //         delay: 0,
+  //         useNativeDriver: true
+  //       })
+  //     ]).start();
+  //   };
 
-//   easeStopped = () => {
-//     // Animated.timing(this.state.wrapValue, {
-//     //     toValue: 1,
-//     //     duration:100,
-//     //     delay: 0,
-//     //     useNativeDriver: true
-//     //   }).start();
+  //   easeStopped = () => {
+  //     // Animated.timing(this.state.wrapValue, {
+  //     //     toValue: 1,
+  //     //     duration:100,
+  //     //     delay: 0,
+  //     //     useNativeDriver: true
+  //     //   }).start();
 
-//     console.warn("hello");
-//   };
+  //     console.warn("hello");
+  //   };
 
   //   easeInTranslate = () => {
   //     //   LayoutAnimation.configureNext(this.configurefile)
@@ -165,18 +163,18 @@ export default class MainApp extends Component {
   //     }).start();
   //   };
 
+  AnimateImage = offset => {
+    if (offset < 2.5) {
+      console.warn("0");
+      //   this.easeZeroScale();
+    } else if (offset > 2.5) {
+      console.warn("1<x");
 
-AnimateImage=(offset)=>{
-    if (offset <2.5) {
-                console.warn('0');
-            //   this.easeZeroScale();
-            } else if (offset >2.5) {
-                console.warn('1<x');
-        
-            //   this.easeOnScroll();
-            } 
-}
+      //   this.easeOnScroll();
+    }
+  };
 
+  fadeUpOut = () => {};
   componentDidMount() {
     this.scrollWrap.addListener(({ value }) => (this.offset = value));
   }
@@ -185,19 +183,23 @@ AnimateImage=(offset)=>{
     let heighter = this.scrollWrap.interpolate({
       inputRange: [0, 300],
       outputRange: [300, 100],
-      extrapolate: "clamp",
-
+      extrapolate: "clamp"
     });
 
-    let ImageHeighter=this.scrollWrap.interpolate({
+    let ImageHeighter = this.scrollWrap.interpolate({
+      inputRange: [0, 350],
+      outputRange: [200, 100],
+      extrapolate: "clamp"
+    });
+    let  topper = this.scrollWrap.interpolate({
         inputRange: [0, 300],
-        outputRange: [200, 100],
-      extrapolate: "clamp",
-
+      outputRange: [75, 0],
+      extrapolate: "clamp"
     })
 
     return (
       <View style={styles.componentContainer}>
+      
         <Animated.View
           style={[
             styles.expandableHeader,
@@ -214,21 +216,44 @@ AnimateImage=(offset)=>{
             // }
           ]}
         >
+        
           <Animated.View style={styles.ImageContainer}>
             <Animated.Image
               source={require("../Assets/Images/neon-lights.png")}
               style={{
                 width: deviceWidth,
-                height: ImageHeighter,
+                height: ImageHeighter
                 // transform: [
                 // //   { scaleY: this.state.wrapValue },
                 //   { translateY:-100 }
                 // ]
               }}
             />
+            <Animated.View style={styles.BigProfileInfo}>
+              <Text>Brad Beardman</Text>
+              <View style={styles.locationWrapper}>
+                <Image source={require("../Assets/Images/location.png")} />
+                <Text>San Fransisco , CA </Text>
+         
+
+              </View>
+            </Animated.View>
+            <View style={[styles.profileInfoWrapper, { flexDirection: "row" }]}>
+              <View style={[styles.following, { flexDirection: "row" }]}>
+                <Text>1,209</Text>
+                <Text>Following</Text>
+              </View>
+              <View style={[styles.followers, { flexDirection: "row" }]}>
+                <Text>42.5</Text>
+                <Text>Followers</Text>
+              </View>
+
+            </View>
+            <Animated.View style={[styles.BigAbsoluteProfileView,{top:topper}]}></Animated.View>
           </Animated.View>
+
         </Animated.View>
-        <Animated.View style={styles.navigateWrapper}>
+        <Animated.View style={[styles.navigateWrapper]}>
           <TouchableHighlight onPress={() => {}}>
             <Text>Lastest photos</Text>
           </TouchableHighlight>
@@ -257,22 +282,22 @@ AnimateImage=(offset)=>{
               showsVerticalScrollIndicator={false}
               onScroll={({ nativeEvent }) => {
                 const scrollSensitivity = 4 / 3;
-                const offset = nativeEvent.contentOffset.y / scrollSensitivity ;
-                LayoutAnimation.configureNext(this.configurefile)
+                const offset = nativeEvent.contentOffset.y / scrollSensitivity;
+                LayoutAnimation.configureNext(this.configurefile);
                 this.scrollWrap.setValue(offset);
-                    // console.warn('hello'),
-                    // console.warn(offset)
-                
-                    // this.AnimateImage(offset);
+                // console.warn('hello'),
+                // console.warn(offset)
+
+                // this.AnimateImage(offset);
                 // this.setState(
                 // //   {
                 // //       ScrollY: Math.floor(nativeEvent.contentOffset.y / 10)
 
                 // //     },
                 //   () => {
-                    //   this.AnimateHeader();
+                //   this.AnimateHeader();
                 //     // console.warn(this.state.wrapValue);
-                    // this.AnimatedWayHeader();
+                // this.AnimatedWayHeader();
                 //   }
                 // );
               }}
@@ -280,7 +305,7 @@ AnimateImage=(offset)=>{
                 <View style={styles.flatlistElement}>
                   <Image
                     source={item.image}
-                    style={{ height: 300, width: deviceWidth }}
+                    style={{ height: 225, width: deviceWidth }}
                     // resizeMode='contain'
                   />
                   <View style={styles.NavInfo}>
@@ -333,7 +358,22 @@ const styles = StyleSheet.create({
 
     borderColor: "yellow",
     borderWidth: 3,
-    backgroundColor: "royalblue"
+    backgroundColor: "royalblue",
+    overflow: 'hidden'
+  },
+
+  BigAbsoluteProfileView:{
+    //   flex:1,
+    height:150,
+    width:deviceWidth,
+    backgroundColor:'rgba(200,200,200,0.3)',
+      borderWidth:5,
+      borderColor:'red',
+      position: 'absolute',
+      zIndex: 100,
+      top:10,
+      overflow: 'hidden',
+
   },
   navigateWrapper: {
     height: 35,
@@ -370,5 +410,8 @@ const styles = StyleSheet.create({
     height: 25,
     flexDirection: "row",
     borderWidth: 3
+  },
+  locationWrapper: {
+    flexDirection: "row"
   }
 });
