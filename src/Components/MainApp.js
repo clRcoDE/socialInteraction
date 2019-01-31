@@ -10,7 +10,8 @@ import {
   LayoutAnimation,
   UIManager,
   Dimensions,
-  TouchableHighlight
+  TouchableHighlight,
+  Easing
 } from "react-native";
 import dataSource from "./Data";
 import { off } from "rsvp";
@@ -29,13 +30,18 @@ export default class MainApp extends Component {
       ScrollY: new Animated.Value(0),
       wrapValue: new Animated.Value(1),
       posY: new Animated.Value(0),
-      isFollowed: false
+      isFollowed: false,
+      upAndGo: new Animated.Value(25),
+      
+      buttonWidth: new Animated.Value(1),
+      isScrolled:false
     };
-
+    this.opacityUp = new Animated.Value(0);
     this.GoUp = new Animated.Value(0);
     this.scrollWrap = new Animated.Value(0);
-    this.fadeInOut = new Animated.Value(1)
+    this.fadeInOut = new Animated.Value(1);
     // this.fadeIn = new Animated.Value(0)
+    
   }
 
   configurefile = {
@@ -63,6 +69,34 @@ export default class MainApp extends Component {
       useNativeDriver: true
     }
   };
+
+
+
+  // configButton = {
+  //   duration: 1000,
+  //   create: {
+  //     type: "easeIn",
+  //     // springDamping: 0.4,
+  //     useNativeDriver: true,
+
+  //     duration: 400,
+  //     property: "scaleX"
+  //   },
+  //   update: {
+  //     type: "easeIn",
+  //     // springDamping: 0.4,
+  //     property: "scaleX",
+  //     useNativeDriver: true,
+  //     duration: 400
+  //   },
+  //   delete: {
+  //     type: "easeIn",
+  //     // springDamping: 0.4,
+  //     duration: 400,
+  //     property: "scaleX",
+  //     useNativeDriver: true
+  //   }
+  // };
 
   //   easeTranslate = () => {
   //     Animated.timing(this.state.wrapValue, {
@@ -182,59 +216,60 @@ export default class MainApp extends Component {
   //   }
   // };
 
-//   fadeUpOut = () => {
-//     Animated.parallel([Animated.timing(this.GoUp, {
-//       toValue: -50,
-//       duration: 200,
-//       useNativeDriver:true
-//     }),
-//     Animated.timing(this.fadeInOut,{
-// toValue:0,
-// duration:200,
-// useNativeDriver:true,
+  //   fadeUpOut = () => {
+  //     Animated.parallel([Animated.timing(this.GoUp, {
+  //       toValue: -50,
+  //       duration: 200,
+  //       useNativeDriver:true
+  //     }),
+  //     Animated.timing(this.fadeInOut,{
+  // toValue:0,
+  // duration:200,
+  // useNativeDriver:true,
 
-//     })
-  
-  
-  
+  //     })
+
   // ]).start()
-    
+
   // };
 
+  fadeUpIn = () => {};
 
-  fadeUpIn = () => {}
+  //     Animated.parallel([Animated.timing(this.GoUp, {
+  //       toValue: 0,
+  //       duration: 100,
+  //       useNativeDriver:true,
+  //     }),Animated.timing(this.fadeInOut,{
+  // toValue:1,
+  // duration:400,
+  // useNativeDriver:true,
 
-    
-//     Animated.parallel([Animated.timing(this.GoUp, {
-//       toValue: 0,
-//       duration: 100,
-//       useNativeDriver:true,
-//     }),Animated.timing(this.fadeInOut,{
-// toValue:1,
-// duration:400,
-// useNativeDriver:true,
+  //     })
 
-//     })
-  
-  
-  
-//   ]).start()
-   
+  //   ]).start()
 
-  
   // componentDidMount() {
   //   this.scrollWrap.addListener(({ value }) => (this.offset = value));
   // }
 
-  changeIsFollowed = x => {
-    if (x === 1) {
-      LayoutAnimation.configureNext(this.configurefile);
-      this.setState({ isFollowed: true });
-    } else {
-      LayoutAnimation.configureNext(this.configurefile);
-      this.setState({ isFollowed: false });
-    }
-  };
+  // changeIsFollowed = x => {
+  //   if (x === 1) {
+  //     LayoutAnimation.configureNext(this.configurefile);
+  //     this.setState({ isFollowed: true });
+  //   } else {
+  //     LayoutAnimation.configureNext(this.configurefile);
+  //     this.setState({ isFollowed: false });
+  //   }
+
+
+  // };
+
+
+
+  changeButton=()=>{
+    // LayoutAnimation.configureNext(this.configButton)
+    // this.setState({isScrolled:true})
+  }
 
   render() {
     let heighter = this.scrollWrap.interpolate({
@@ -262,6 +297,12 @@ export default class MainApp extends Component {
     let photoWidthHeight = this.scrollWrap.interpolate({
       inputRange: [0, 300],
       outputRange: [100, 60],
+      extrapolate: "clamp"
+    });
+
+    let paddingH = this.scrollWrap.interpolate({
+      inputRange: [0, 300],
+      outputRange: [25, 0],
       extrapolate: "clamp"
     });
 
@@ -301,10 +342,10 @@ export default class MainApp extends Component {
                 backgroundColor: "yellowgreen",
                 height: 140,
                 justifyContent: "flex-end",
-                borderWidth:4,
-                borderColor:'red',
-                paddingBottom:10,
-                opacity:this.fadeInOut
+                borderWidth: 4,
+                borderColor: "red",
+                paddingBottom: 10,
+                opacity: this.fadeInOut
               }}
             >
               <Animated.View style={[styles.BigProfileInfo]}>
@@ -336,27 +377,48 @@ export default class MainApp extends Component {
                   style={{
                     width: photoWidthHeight,
                     height: photoWidthHeight,
-                    borderRadius: 100
+                    borderRadius: 100,
+                    borderColor: "#fff",
+                    borderWidth: 3
                   }}
                 />
-               
               </View>
-              <View style={styles.centerFadeText}><Text>Brad Beardman</Text><Text>Brad Beardman</Text></View>
-              {this.state.isFollowed ? (
-                <TouchableHighlight
-                  onPress={() => {}}
-                  style={[styles.followButton, { width: 30 }]}
+              <View style={styles.centerFadeText}>
+                <Animated.Text
+                  style={[
+                    styles.headerText,
+                    {
+                      opacity: this.opacityUp,
+                      transform: [{ translateY: this.state.upAndGo }]
+                    }
+                  ]}
                 >
-                  <Text>+</Text>
-                </TouchableHighlight>
-              ) : (
-                <TouchableHighlight
-                  onPress={() => {}}
-                  style={[styles.followButton, { width: 100 }]}
+                  Brad Beardman
+                </Animated.Text>
+                <Animated.Text
+                  style={[
+                    styles.headerText,
+                    {
+                      opacity: this.opacityUp,
+                      transform: [{ translateY: this.state.upAndGo }]
+                    }
+                  ]}
                 >
-                  <Text>Follow</Text>
-                </TouchableHighlight>
-              )}
+                  42.5K Followers
+                </Animated.Text>
+              </View>
+              <Animated.View
+                style={[
+                  styles.followButton,
+                  { 
+                    // transform: [{ scaleX: this.state.buttonWidth }], 
+                    // width: 50 ,
+                     paddingHorizontal: paddingH, }
+                ]}
+              >
+              {/* <TouchableHighlight onPress={() => {}}>{this.state.isScrolled ? <Text>++</Text> : <Text>Follow</Text>}</TouchableHighlight> */}
+                
+              </Animated.View>
             </Animated.View>
           </Animated.View>
         </Animated.View>
@@ -388,16 +450,82 @@ export default class MainApp extends Component {
               ref="_MainFlatlist"
               showsVerticalScrollIndicator={false}
               onScroll={({ nativeEvent }) => {
-                {Animated.event(
-                  [{ nativeEvent: { contentOffset: { y: this.state.animatedValue } } }],
-                  { useNativeDriver: true } // <-- Add this
-                )}
+                {
+                  Animated.event(
+                    [
+                      {
+                        nativeEvent: {
+                          contentOffset: { y: this.state.animatedValue }
+                        }
+                      }
+                    ],
+                    { useNativeDriver: true } // <-- Add this
+                  );
+                }
                 const scrollSensitivity = 4 / 3;
                 const offset = nativeEvent.contentOffset.y / scrollSensitivity;
                 LayoutAnimation.configureNext(this.configurefile);
                 this.scrollWrap.setValue(offset);
+
+                if (offset > 140) {
+                  // this.setState({isScrolled:true})
+                  this.changeButton()
+                  // console.warn(this.state.isScrolled)
+
+                  Animated.parallel([
+                    Animated.timing(this.state.upAndGo, {
+                      toValue: -5,
+                      duration: 100,
+                      delay: 0,
+                      useNativeDriver: true
+                    }),
+                    Animated.timing(this.opacityUp, {
+                      toValue: 1,
+                      duration: 200,
+                      useNativeDriver: true,
+                      delay: 0
+                    }),
+                    // Animated.timing(this.state.buttonWidth, {
+                    //   toValue: 1.5,
+                    //   duration: 200,
+                    //   delay: 0,
+                    //   useNativeDriver: true,
+                    //   easing: Easing.linear()
+                    // })
+                  ]).start();
+                } else {
+                  // this.setState({isScrolled:false})
+                  // this.setState({isScrolled:false})
+                  // console.warn(this.state.isScrolled)
+                  this.changeButton()
+
+
+                  Animated.parallel([
+                    Animated.timing(this.state.upAndGo, {
+                      toValue: 25,
+                      duration: 100,
+                      delay: 0,
+                      useNativeDriver: true
+                    }),
+                    Animated.timing(this.opacityUp, {
+                      toValue: 0,
+                      duration: 200,
+                      useNativeDriver: true,
+                      delay: 0
+                    }),
+                    // Animated.timing(this.state.buttonWidth, {
+                    //   toValue: 1,
+                    //   duration: 200,
+                    //   delay: 0,
+                    //   useNativeDriver: true,
+                    //   easing: Easing.linear()
+
+                    // })
+                  ]).start();
+                }
+
                 // this.fadeUpOut();
-                // 
+                //
 
                 // console.warn(offset)
                 // if (offset > 140) {
@@ -487,7 +615,7 @@ const styles = StyleSheet.create({
 
   BigAbsoluteProfileView: {
     //   flex:1,
-    height: 100,
+    height: 115,
     width: deviceWidth,
     backgroundColor: "rgba(200,200,200,0.3)",
     borderWidth: 5,
@@ -550,12 +678,11 @@ const styles = StyleSheet.create({
   locationWrapper: {
     flexDirection: "row",
     borderWidth: 3,
-    borderColor:'purple'
-  }
-  ,
-  headerText:{
-    fontSize:18,
-    color:'#fff',
-    fontWeight: '600',
+    borderColor: "purple"
+  },
+  headerText: {
+    fontSize: 18,
+    color: "#fff",
+    fontWeight: "600"
   }
 });
