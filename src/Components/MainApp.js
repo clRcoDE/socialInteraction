@@ -171,58 +171,60 @@ export default class MainApp extends Component {
   //     }).start();
   //   };
 
-  AnimateImage = offset => {
-    if (offset < 2.5) {
-      console.warn("0");
-      //   this.easeZeroScale();
-    } else if (offset > 2.5) {
-      console.warn("1<x");
+  // AnimateImage = offset => {
+  //   if (offset < 2.5) {
+  //     console.warn("0");
+  //     //   this.easeZeroScale();
+  //   } else if (offset > 2.5) {
+  //     console.warn("1<x");
 
-      //   this.easeOnScroll();
-    }
-  };
+  //     //   this.easeOnScroll();
+  //   }
+  // };
 
-  fadeUpOut = () => {
-    Animated.parallel([Animated.timing(this.GoUp, {
-      toValue: -50,
-      duration: 200,
-      useNativeDriver:true
-    }),
-    Animated.timing(this.fadeInOut,{
-toValue:0,
-duration:200,
-useNativeDriver:true,
+//   fadeUpOut = () => {
+//     Animated.parallel([Animated.timing(this.GoUp, {
+//       toValue: -50,
+//       duration: 200,
+//       useNativeDriver:true
+//     }),
+//     Animated.timing(this.fadeInOut,{
+// toValue:0,
+// duration:200,
+// useNativeDriver:true,
 
-    })
+//     })
   
   
   
-  ]).start()
+  // ]).start()
     
-  };
-  fadeUpIn = () => {
+  // };
+
+
+  fadeUpIn = () => {}
 
     
-    Animated.parallel([Animated.timing(this.GoUp, {
-      toValue: 0,
-      duration: 100,
-      useNativeDriver:true,
-    }),Animated.timing(this.fadeInOut,{
-toValue:1,
-duration:400,
-useNativeDriver:true,
+//     Animated.parallel([Animated.timing(this.GoUp, {
+//       toValue: 0,
+//       duration: 100,
+//       useNativeDriver:true,
+//     }),Animated.timing(this.fadeInOut,{
+// toValue:1,
+// duration:400,
+// useNativeDriver:true,
 
-    })
+//     })
   
   
   
-  ]).start()
+//   ]).start()
    
 
-  };
-  componentDidMount() {
-    this.scrollWrap.addListener(({ value }) => (this.offset = value));
-  }
+  
+  // componentDidMount() {
+  //   this.scrollWrap.addListener(({ value }) => (this.offset = value));
+  // }
 
   changeIsFollowed = x => {
     if (x === 1) {
@@ -259,7 +261,7 @@ useNativeDriver:true,
 
     let photoWidthHeight = this.scrollWrap.interpolate({
       inputRange: [0, 300],
-      outputRange: [75, 50],
+      outputRange: [100, 60],
       extrapolate: "clamp"
     });
 
@@ -386,22 +388,26 @@ useNativeDriver:true,
               ref="_MainFlatlist"
               showsVerticalScrollIndicator={false}
               onScroll={({ nativeEvent }) => {
+                {Animated.event(
+                  [{ nativeEvent: { contentOffset: { y: this.state.animatedValue } } }],
+                  { useNativeDriver: true } // <-- Add this
+                )}
                 const scrollSensitivity = 4 / 3;
                 const offset = nativeEvent.contentOffset.y / scrollSensitivity;
                 LayoutAnimation.configureNext(this.configurefile);
                 this.scrollWrap.setValue(offset);
-                this.fadeUpOut();
+                // this.fadeUpOut();
                 // 
 
                 // console.warn(offset)
-                if (offset > 140) {
-                  this.changeIsFollowed(1);
-                  this.fadeUpOut();
-                } else {
-                  this.changeIsFollowed(0);
-                  this.fadeUpIn();
+                // if (offset > 140) {
+                //   this.changeIsFollowed(1);
+                //   this.fadeUpOut();
+                // } else {
+                //   this.changeIsFollowed(0);
+                //   this.fadeUpIn();
 
-                }
+                // }
                 // console.warn('hello'),
                 // console.warn(offset)
 
@@ -545,5 +551,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     borderWidth: 3,
     borderColor:'purple'
+  }
+  ,
+  headerText:{
+    fontSize:18,
+    color:'#fff',
+    fontWeight: '600',
   }
 });
